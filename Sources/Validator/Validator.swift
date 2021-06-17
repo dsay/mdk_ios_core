@@ -106,7 +106,7 @@ public extension Validator where InputType == String {
         return self
     }
     
-    private func regex(value: String?, _ regex: String, _ error: ValidationError, _ nilResponse: Bool = false) -> Result<Void, ValidationError> {
+    func regex(value: String?, _ regex: String, _ error: ValidationError, _ nilResponse: Bool = false) -> Result<Void, ValidationError> {
         guard let value = value else {
             return nilResponse.map(error)
         }
