@@ -25,9 +25,9 @@ public struct Regex {
 
 open class Validator<InputType, ValidationError: Error> {
     
-    typealias ValidationRule = (InputType?, Bool) -> Result<Void, ValidationError>
+    public typealias ValidationRule = (InputType?, Bool) -> Result<Void, ValidationError>
 
-    private var rules: [ValidationRule] = []
+    public var rules: [ValidationRule] = []
 
     public init() {
         
@@ -50,6 +50,10 @@ open class Validator<InputType, ValidationError: Error> {
             }
             return .success(value)
         }
+    }
+    
+    public func add(_ rule: @escaping ValidationRule) {
+        rules.append(rule)
     }
 }
 
