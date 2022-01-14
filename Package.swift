@@ -31,7 +31,6 @@ let package = Package(
             targets: ["LocationRepository"]),
     ],
     dependencies: [
-
     ],
     targets: [
         

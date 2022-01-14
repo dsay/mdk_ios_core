@@ -4,8 +4,14 @@ open class ServiceLocator {
 
     static public let shared = ServiceLocator()
 
+    public var perent: ServiceLocator?
+    
     private var registry: [ServiceKey: Any] = [:]
 
+    public init(perent: ServiceLocator? = nil) {
+        self.perent = perent
+    }
+    
     public func register<T>(service: @escaping (ServiceLocator) -> T, name: String? = nil) {
         let key = ServiceKey(serviceType: T.self, name: name)
         
@@ -18,23 +24,16 @@ open class ServiceLocator {
         registry[key] = service
     }
 
-    public func tryGetService<T>(name: String? = nil) -> T? {
-        let key = ServiceKey(serviceType: T.self, name: name)
-
-        switch registry[key] {
-        case let service as T:
+    public func tryResolve<T>(name: String? = nil) -> T? {
+        if let service: T = getService(name: name) {
             return service
-            
-        case let service as (ServiceLocator) -> T:
-            return service(self)
-            
-        default:
-            return nil
+        } else {
+            return perent?.tryResolve(name: name)
         }
     }
     
-    public func getService<T>(name: String? = nil) -> T {
-        if let service: T = tryGetService(name: name) {
+    public func resolve<T>(name: String? = nil) -> T {
+        if let service: T = tryResolve(name: name) {
             return service
         } else {
             fatalError("Service: \(T.self) was not registerd!!!")
@@ -45,6 +44,21 @@ open class ServiceLocator {
         let key = ServiceKey(serviceType: T.self, name: name)
         
         registry.removeValue(forKey: key)
+    }
+    
+    private func getService<T>(name: String? = nil) -> T? {
+        let key = ServiceKey(serviceType: T.self, name: name)
+        
+        switch registry[key] {
+        case let service as T:
+            return service
+            
+        case let service as (ServiceLocator) -> T:
+            return service(self)
+            
+        default:
+            return nil
+        }
     }
 }
 
@@ -76,7 +90,7 @@ public struct Injection<T> {
     
     public var wrappedValue: T {
         get {
-            return ServiceLocator.shared.getService()
+            return ServiceLocator.shared.resolve()
         }
         set {
             ServiceLocator.shared.register(service: newValue)

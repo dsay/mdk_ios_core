@@ -19,7 +19,7 @@ final class ServiceLocatorTests: XCTestCase {
     }
 
     func testGetNotRegistredService() {
-        let test: TestService? = serviceLocator.tryGetService()
+        let test: TestService? = serviceLocator.tryResolve()
         XCTAssertEqual(test, nil)
     }
     
@@ -27,7 +27,7 @@ final class ServiceLocatorTests: XCTestCase {
         let test = TestService()
         serviceLocator.register(service: test)
         
-        let test1: TestService? = serviceLocator.tryGetService()
+        let test1: TestService? = serviceLocator.tryResolve()
         XCTAssertEqual(test, test1)
     }
     
@@ -35,7 +35,7 @@ final class ServiceLocatorTests: XCTestCase {
         let test: TestProtocol = TestService()
         serviceLocator.register(service: test)
         
-        let test1: TestProtocol? = serviceLocator.tryGetService()
+        let test1: TestProtocol? = serviceLocator.tryResolve()
         XCTAssertNotNil(test1)
     }
     
@@ -44,7 +44,7 @@ final class ServiceLocatorTests: XCTestCase {
             TestService()
         }
         
-        let test: TestService? = serviceLocator.tryGetService()
+        let test: TestService? = serviceLocator.tryResolve()
         XCTAssertNotNil(test)
     }
     
@@ -55,10 +55,10 @@ final class ServiceLocatorTests: XCTestCase {
         serviceLocator.register(service: some1, name: "Some1")
         serviceLocator.register(service: some2, name: "Some2")
 
-        let testNil: TestService? = serviceLocator.tryGetService()
+        let testNil: TestService? = serviceLocator.tryResolve()
         XCTAssertEqual(testNil, nil)
         
-        let test1: TestService? = serviceLocator.tryGetService(name: "Some1")
+        let test1: TestService? = serviceLocator.tryResolve(name: "Some1")
         
         XCTAssertEqual(some1, test1)
         XCTAssertNotEqual(some2, test1)
@@ -68,12 +68,12 @@ final class ServiceLocatorTests: XCTestCase {
         let test = TestService()
         serviceLocator.register(service: test)
         
-        let test1: TestService? = serviceLocator.tryGetService()
+        let test1: TestService? = serviceLocator.tryResolve()
         XCTAssertNotEqual(test1, nil)
 
         serviceLocator.unregister(service: test)
         
-        let test2: TestService? = serviceLocator.tryGetService()
+        let test2: TestService? = serviceLocator.tryResolve()
 
         XCTAssertEqual(test2, nil)
     }
