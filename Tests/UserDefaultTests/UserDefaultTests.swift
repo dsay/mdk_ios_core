@@ -3,19 +3,19 @@ import XCTest
 
 class UserData {
 
-    @UserDefault("kTestFalseBool", defaultValue: false)
-    static var testFalseBool: Bool
+    @UserDefaultsStored(key: "kTestFalseBool")
+    static var testFalseBool: Bool = false
 
-    @UserDefault("kTestTrueBool", defaultValue: true)
-    static var testTrueBool: Bool
+    @UserDefaultsStored(key: "kTestTrueBool")
+    static var testTrueBool: Bool = true
 
-    @NullableUserDefault("kTestNullableBooll")
+    @UserDefaultsStored(key: "kTestNullableBooll")
     static var testNullableBool: Bool?
     
-    static func clean() {
-        let domain = Bundle.main.bundleIdentifier!
-        UserDefaults.standard.removePersistentDomain(forName: domain)
-        UserDefaults.standard.synchronize()
+    static func clear() {
+        _testTrueBool.clear()
+        _testFalseBool.clear()
+        _testNullableBool.clear()
     }
 }
 
@@ -23,8 +23,7 @@ final class UserDefaultTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        
-        UserData.clean()
+        UserData.clear()
     }
     
     func testDefault() {
@@ -40,8 +39,8 @@ final class UserDefaultTests: XCTestCase {
     func testClear() {
         UserData.testNullableBool = false
         UserData.testFalseBool = true
-        
-        UserData.clean()
+
+        UserData.clear()
         
         XCTAssertFalse(UserData.testFalseBool)
         XCTAssertEqual(UserData.testNullableBool, nil)

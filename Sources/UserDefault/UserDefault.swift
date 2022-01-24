@@ -1,41 +1,51 @@
 import Foundation
 
 @propertyWrapper
-public struct UserDefault<T> {
+public struct UserDefaultsStored<Value> {
     
-    let key: String
-    let defaultValue: T
-    
-    public init(_ key: String, defaultValue: T) {
+    private let key: String
+    private let defaultValue: Value
+    private let storage: UserDefaults
+
+    public init(wrappedValue defaultValue: Value, key: String, storage: UserDefaults = .standard) {
         self.key = key
         self.defaultValue = defaultValue
+        self.storage = storage
     }
     
-    public var wrappedValue: T {
+    public var wrappedValue: Value {
         get {
-            return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+             storage.object(forKey: key) as? Value ?? defaultValue
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: key)
+            if let optional = newValue as? AnyOptional, optional.isNil {
+                storage.removeObject(forKey: key)
+            } else {
+                storage.setValue(newValue, forKey: key)
+            }
         }
+    }
+    
+    public func clear() {
+        storage.setValue(nil, forKey: key)
     }
 }
 
-@propertyWrapper
-public struct NullableUserDefault<T> {
+public extension UserDefaultsStored where Value: ExpressibleByNilLiteral {
     
-    let key: String
-    
-    public init(_ key: String) {
-        self.key = key
+    init(key: String, storage: UserDefaults = .standard) {
+        self.init(wrappedValue: nil, key: key, storage: storage)
     }
+}
+
+private protocol AnyOptional {
     
-    public var wrappedValue: T? {
-        get {
-            return UserDefaults.standard.object(forKey: key) as? T
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: key)
-        }
+    var isNil: Bool { get }
+}
+
+extension Optional: AnyOptional {
+    
+    var isNil: Bool {
+        self == nil
     }
 }
