@@ -12,19 +12,19 @@ open class ServiceLocator {
         self.perent = perent
     }
     
-    public func register<T>(service: @escaping (ServiceLocator) -> T, name: String? = nil) {
+    open func register<T>(service: @escaping (ServiceLocator) -> T, name: String? = nil) {
         let key = ServiceKey(serviceType: T.self, name: name)
         
         registry[key] = service
     }
 
-    public func register<T>(service: T, name: String? = nil) {
+    open func register<T>(service: T, name: String? = nil) {
         let key = ServiceKey(serviceType: T.self, name: name)
         
         registry[key] = service
     }
 
-    public func tryResolve<T>(name: String? = nil) -> T? {
+    open func tryResolve<T>(name: String? = nil) -> T? {
         if let service: T = getService(name: name) {
             return service
         } else {
@@ -32,7 +32,7 @@ open class ServiceLocator {
         }
     }
     
-    public func resolve<T>(name: String? = nil) -> T {
+    open func resolve<T>(name: String? = nil) -> T {
         if let service: T = tryResolve(name: name) {
             return service
         } else {
@@ -40,7 +40,7 @@ open class ServiceLocator {
         }
     }
 
-    public func unregister<T>(service: T, name: String? = nil) {
+    open func unregister<T>(service: T, name: String? = nil) {
         let key = ServiceKey(serviceType: T.self, name: name)
         
         registry.removeValue(forKey: key)

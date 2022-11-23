@@ -30,11 +30,11 @@ open class LocationRepository: NSObject {
         initializeTheLocationManager()
     }
 
-    public func stopUpdate() {
+    open func stopUpdate() {
         locationManager.stopUpdatingLocation()
     }
     
-    public func update(completionHandler: @escaping Location) {
+    open func update(completionHandler: @escaping Location) {
         guard isLocationServicesEnabled() else {
             completionHandler(.failure(.disabled))
             return
@@ -50,7 +50,7 @@ open class LocationRepository: NSObject {
         locationManager.startUpdatingLocation()
     }
     
-    public func backgroundUpdate(completionHandler: @escaping Location) {
+    open func backgroundUpdate(completionHandler: @escaping Location) {
         guard isLocationServicesEnabled() else {
             completionHandler(.failure(.disabled))
             return
@@ -68,29 +68,29 @@ open class LocationRepository: NSObject {
         locationManager.startUpdatingLocation()
     }
     
-    private func initializeTheLocationManager() {
+    open func initializeTheLocationManager() {
         locationManager.desiredAccuracy = accuracy
         locationManager.distanceFilter = accuracy
         locationManager.delegate = self
     }
 
-    public func isLocationServicesEnabled() -> Bool {
+    open func isLocationServicesEnabled() -> Bool {
         CLLocationManager.locationServicesEnabled()
     }
 
-    public func isAuthorizationStatusValid() -> Bool {
+    open func isAuthorizationStatusValid() -> Bool {
         validStatuses.contains(CLLocationManager.authorizationStatus())
     }
     
-    public func isNotDeterminedAuthorization() -> Bool {
+    open func isNotDeterminedAuthorization() -> Bool {
         CLLocationManager.authorizationStatus() == .notDetermined
     }
     
-    public func isDeniedAuthorization() -> Bool {
+    open func isDeniedAuthorization() -> Bool {
         CLLocationManager.authorizationStatus() == .denied
     }
     
-    public func getPermission(completionHandler: @escaping Permission) {
+    open func getPermission(completionHandler: @escaping Permission) {
         permissionCompletionHandler = completionHandler
         locationManager.requestAlwaysAuthorization()
     }

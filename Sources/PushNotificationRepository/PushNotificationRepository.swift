@@ -19,7 +19,7 @@ open class PushNotificationRepository: NSObject {
         self.notificationCenter = notificationCenter
     }
     
-    public func isAuthorizated(completionHandler: @escaping (Result<Void, PushNotificationError>) -> Void) {
+    open func isAuthorizated(completionHandler: @escaping (Result<Void, PushNotificationError>) -> Void) {
         notificationCenter.getNotificationSettings { (settings) in
             guard settings.authorizationStatus != .notDetermined else {
                 return
@@ -33,7 +33,7 @@ open class PushNotificationRepository: NSObject {
         }
     }
     
-    public func getPermission(completionHandler: @escaping (Result<Void, PushNotificationError>) -> Void) {
+    open func getPermission(completionHandler: @escaping (Result<Void, PushNotificationError>) -> Void) {
         notificationCenter.requestAuthorization(options: authOptions) { status, _ in
             DispatchQueue.main.async {
                 if status == true {
@@ -47,12 +47,12 @@ open class PushNotificationRepository: NSObject {
         }
     }
 
-    public func setup() {
+    open func setup() {
         UIApplication.shared.registerForRemoteNotifications()
         notificationCenter.delegate = self
     }
 
-    public func unregister() {
+    open func unregister() {
         UIApplication.shared.unregisterForRemoteNotifications()
     }
 }

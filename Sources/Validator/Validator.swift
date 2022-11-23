@@ -33,7 +33,7 @@ open class Validator<InputType, ValidationError: Error> {
         
     }
     
-    public func optional(_ value: InputType?) -> Result<InputType?, ValidationError> {
+    open func optional(_ value: InputType?) -> Result<InputType?, ValidationError> {
         if case .failure(let error) = rules.map({ $0(value, true) }).first(where: { $0.isFailure }) {
             return .failure(error)
         } else {
@@ -41,7 +41,7 @@ open class Validator<InputType, ValidationError: Error> {
         }
     }
     
-    public func required(_ value: InputType?) -> Result<InputType, ValidationError> {
+    open func required(_ value: InputType?) -> Result<InputType, ValidationError> {
         if case .failure(let error) = rules.map({ $0(value, false) }).first(where: { $0.isFailure }) {
             return .failure(error)
         } else {
@@ -52,7 +52,7 @@ open class Validator<InputType, ValidationError: Error> {
         }
     }
     
-    public func appending(_ rule: @escaping ValidationRule) -> Validator {
+    open func appending(_ rule: @escaping ValidationRule) -> Validator {
         rules.append(rule)
         return self
     }
